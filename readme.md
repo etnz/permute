@@ -1,3 +1,4 @@
+[![Travis](https://travis-ci.org/etnz/permute.svg?branch=master)](https://travis-ci.org/etnz/permute.svg?branch=master)
 [![GoDoc](https://godoc.org/github.com/etnz/permute?status.svg)](https://godoc.org/github.com/etnz/permute)
 
 # permute
