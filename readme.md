@@ -1,3 +1,5 @@
+[![GoDoc](https://godoc.org/github.com/etnz/permute?status.svg)](https://godoc.org/github.com/etnz/permute)
+
 # permute
 
 
