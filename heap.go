@@ -31,10 +31,10 @@ func (h *Heap) Next(swap *[2]int) (ok bool) {
 			h.c[h.n]++
 			h.n = 0
 			return true
-		} else {
-			h.c[h.n] = 0
-			h.n++
 		}
+		//else
+		h.c[h.n] = 0
+		h.n++
 	}
 	*swap = [2]int{0, 0}
 	return false

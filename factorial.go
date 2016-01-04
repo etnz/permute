@@ -26,6 +26,7 @@ var memoization = [upperLimit]uint64{
 	2432902008176640000,
 }
 
+//Factorial computes n! n beeing in [0,20], simply because there is no uint64 to represent 21!
 func Factorial(n int) uint64 {
 	if n >= upperLimit {
 		panic("uint64 overflow")

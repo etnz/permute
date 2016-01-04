@@ -1,4 +1,4 @@
-// package permute provide tools to deal with permutations
+// Package permute provide tools to deal with permutations
 //
 // A permutation is exactly a '[]int', where each values are unique, *and* in the interval [0, len[
 //
@@ -85,7 +85,7 @@ func Equals(p, q []int) bool {
 	return true
 }
 
-// A type, typically a collection, that satisfies Interface can be permuted by 'Apply' function.
+// Interface is a type, typically a collection, that satisfies Interface can be permuted by 'Apply' function.
 //
 // All types implementing sort.Interface also implements this one
 type Interface interface {
