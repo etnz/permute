@@ -7,12 +7,16 @@
 golang package 'permute' provides a tools to deal with permutations.
 
 A permutation is exactly a '[]int', where each values are unique, *and* in the interval [0, len[
+
     []int{0, 1, 2} is the identity
-A permutation transforms
+    
+A permutation
+
     permutation []int{ 2  ,  1  ,  0  }
     tranforms     x= {"a" , "b" , "c" }
     into             {x[2], x[1], x[0]}
     resulting in     {"c" , "b" , "a" }
+
 In addition to applying a permutation to a collection it offers four different ways to generate all permutations :
 
 ## Lexicographical
