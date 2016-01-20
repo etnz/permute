@@ -6,11 +6,12 @@ func ExampleSteinhausJohnsonTrotter() {
 	i := 0
 
 	A := []string{"A", "B", "C", "D"}
+
+	p := NewPlainChangeGen(len(A))
 	fmt.Printf("%2d:       %v\n", i, A)
 
-	p := New(len(A))
 	var sw [2]int
-	for SteinhausJohnsonTrotter(p, &sw) {
+	for p.Next(&sw) {
 		i++
 		SwapStrings(sw, A)
 		fmt.Printf("%2d: (%d,%d) %v\n", i, sw[0], sw[1], A)
@@ -48,7 +49,7 @@ func ExampleSteinhausJohnsonTrotterEven() {
 
 	A := []string{"A", "B", "C", "D"}
 
-	p := NewSteinhausJohnsonTrotterEven(len(A))
+	p := NewPlainChangeFastGen(len(A))
 	fmt.Printf("%2d:       %v\n", i, A)
 
 	var sw [2]int

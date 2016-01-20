@@ -2,12 +2,12 @@ package permute
 
 import "sort"
 
-// Lexicographical finds the next permutation in lexicographical order.
+// LexNext finds the next permutation in lexicographical order.
 //
 // return false if it has gone back to the identity permutation.
 //
 // inspired from Narayana Pandita in https://en.wikipedia.org/wiki/Permutation
-func Lexicographical(p []int) bool {
+func LexNext(p []int) bool {
 
 	// the principle for lehmer code is to convert an factoradic number into its permutation:
 	//
@@ -72,5 +72,27 @@ func Lexicographical(p []int) bool {
 
 	// and now copy vals to the rest of p
 	copy(p[i+1:], vals)
+	return true
+}
+
+// SubsetLexNext updates 'p' to be the next lexicographical combination in the list of all combinations in lexicographical order
+//
+// returns false if we have generated all the elements
+func SubsetLexNext(p []int, n int) bool {
+	k := len(p)
+	i := k - 1
+	for ; i >= 0 && p[i] == n-k+i; i-- {
+	}
+
+	if i < 0 {
+		for j := 0; j < len(p); j++ {
+			p[j] = j //identity
+		}
+		return false
+	}
+	pi := p[i]
+	for j := i; j < k; j++ {
+		p[j] = pi + 1 + j - i
+	}
 	return true
 }

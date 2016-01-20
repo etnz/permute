@@ -27,7 +27,7 @@ func LehmerCode(p []int) (L []int) {
 	return
 }
 
-// NewLehmerCoded returns a new permutation defined by it's lehmer code
+// NewLehmerCoded returns a new permutation defined by it's Lehmer code
 //
 // len(p) == len(L)
 func NewLehmerCoded(L []int) (p []int) {

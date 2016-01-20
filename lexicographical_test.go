@@ -9,7 +9,7 @@ import (
 func TestNext(t *testing.T) {
 	p := New(3)
 	for i := 0; i < 6; i++ {
-		Lexicographical(p)
+		LexNext(p)
 	}
 
 	if p[0] != 0 || p[1] != 1 || p[2] != 2 {
@@ -25,7 +25,7 @@ func ExampleLexicographical() {
 	x := []string{"A", "B", "C", "D"}
 	fmt.Printf("%2v:%v\n", i, strings.Join(x, ""))
 
-	for Lexicographical(p) {
+	for LexNext(p) {
 		x := []string{"A", "B", "C", "D"}
 		Strings(p, x)
 		i++
@@ -57,4 +57,30 @@ func ExampleLexicographical() {
 	// 21:DBCA
 	// 22:DCAB
 	// 23:DCBA
+}
+func ExampleSubsetLex() {
+
+	p := New(3)
+	i := 0
+	x := []string{"1", "2", "3", "4", "5"}
+	fmt.Printf("%v:%v\n", i, strings.Join(SubStrings(p, x), ""))
+	for SubsetLexNext(p, len(x)) && i < 100 {
+
+		fmt.Printf("%v:%v\n", i, strings.Join(SubStrings(p, x), ""))
+		i++
+	}
+	fmt.Printf("end %v\n", strings.Join(SubStrings(p, x), ""))
+
+	//Output:
+	// 0:123
+	// 0:124
+	// 1:125
+	// 2:134
+	// 3:135
+	// 4:145
+	// 5:234
+	// 6:235
+	// 7:245
+	// 8:345
+	// end 123
 }

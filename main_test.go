@@ -1,6 +1,7 @@
 package permute
 
 import (
+	"fmt"
 	"reflect"
 	"sort"
 	"strings"
@@ -41,6 +42,18 @@ func TestStrings(t *testing.T) {
 	if val[0] != "b" || val[1] != "c" || val[2] != "a" {
 		t.Errorf("invalid ApplyString: got %v, expecting b c a ", val)
 	}
+}
+func ExampleStrings() {
+	x := []string{"a", "b", "c"}
+	Strings([]int{2, 1, 0}, x)
+	fmt.Println(x)
+	//Output: [c b a]
+}
+
+func ExampleSubStrings() {
+	x := SubStrings([]int{0, 2}, []string{"a", "b", "c"})
+	fmt.Println(x)
+	//Output: [a c]
 
 }
 

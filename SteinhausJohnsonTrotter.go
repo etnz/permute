@@ -1,10 +1,5 @@
 package permute
 
-import (
-	"fmt"
-	"strings"
-)
-
 //SteinhausJohnsonTrotter computes the next permutation according to the Steinhaus-Johnson-Trotter algorithm
 //
 // it provides a way to generate ALL the permutations by swapping two adjacent values from one to another
@@ -32,7 +27,7 @@ func steinhausJohnsonTrotter(p []int) (sw [2]int, identity bool) {
 	//      1[4]23
 	//      [4]123
 	//
-	// now we have consumed "123" and we move back using the 'next' one (132)
+	// now we have consumed "123" and we move back using the 'next' one (132) (132  is recusively computed)
 	//
 	// [4]132
 	// 1[4]32
@@ -92,23 +87,9 @@ func steinhausJohnsonTrotter(p []int) (sw [2]int, identity bool) {
 
 }
 
-// SteinhausJohnsonTrotterEven adds up a small structure to speed up the permutation generation
+// SteinhausJohnsonTrotterEven implements a minimal change generator based on Even speed up
 type SteinhausJohnsonTrotterEven struct {
-	p, d []int //permutation and direction marker
-}
-
-// NewSteinhausJohnsonTrotterEven creates the structure for a 'n' size permutations
-func NewSteinhausJohnsonTrotterEven(n int) *SteinhausJohnsonTrotterEven {
-	dir := make([]int, n)
-	//initialise the direction, the biggest number is
-	for i := range dir {
-		dir[i] = -1
-	}
-	dir[0] = 0
-	return &SteinhausJohnsonTrotterEven{
-		d: dir,
-		p: New(n),
-	}
+	P, D []int //permutation and direction marker
 }
 
 // Next return false when we have gone back to the identity
@@ -116,19 +97,19 @@ func NewSteinhausJohnsonTrotterEven(n int) *SteinhausJohnsonTrotterEven {
 // sw is updated with the transposition from previous permutation to the next one
 func (s *SteinhausJohnsonTrotterEven) Next(sw *[2]int) bool {
 
-	N := len(s.p)
+	N := len(s.P)
 	last := true
-	for i := range s.p {
-		if s.d[i] != 0 {
+	for i := range s.P {
+		if s.D[i] != 0 {
 			last = false
 		}
 	}
 	if last {
 		//reset to start again:
-		for i := range s.d {
-			s.d[i] = -1
+		for i := range s.D {
+			s.D[i] = -1
 		}
-		s.d[0] = 0
+		s.D[0] = 0
 		*sw = NewSwap(0, 1)
 		return false
 	}
@@ -136,54 +117,36 @@ func (s *SteinhausJohnsonTrotterEven) Next(sw *[2]int) bool {
 	// value of the max
 	// direction of the max
 	maxi, max, maxd := -1, -1, 0
-	for i, d := range s.d {
-		if d != 0 && (maxi < 0 || s.p[i] > max) {
+	for i, d := range s.D {
+		if d != 0 && (maxi < 0 || s.P[i] > max) {
 			//this is a max
-			maxi, max, maxd = i, s.p[i], d
+			maxi, max, maxd = i, s.P[i], d
 		}
 	}
 	// I've got the max I swap in that direction
 	i := maxi + maxd
 	*sw = NewSwap(maxi, i)
-	SwapInts(*sw, s.p)
+	SwapInts(*sw, s.P)
 	//and the same goes for te direction
-	SwapInts(*sw, s.d)
+	SwapInts(*sw, s.D)
 
 	// shall I set this new position to zero ?
 	//if element to reach the first or last position within the permutation, or if the next element in the same direction is larger than the chosen element, the direction of the chosen element is set to zero
-	if i == 0 || i == N-1 || s.p[i+maxd] > max {
-		s.d[i] = 0
+	if i == 0 || i == N-1 || s.P[i+maxd] > max {
+		s.D[i] = 0
 	}
 
 	//After each step, all elements greater than the chosen element have their directions set to positive or negative, according to whether they are between the chosen element and the start or the end of the permutation respectively.
-	for i, pi := range s.p {
+	for i, pi := range s.P {
 		if pi > max && i < maxi {
-			s.d[i] = 1
+			s.D[i] = 1
 		}
 		if pi > max && i > maxi {
-			s.d[i] = -1
+			s.D[i] = -1
 		}
 
 	}
 
 	return !last
 
-}
-
-func (s *SteinhausJohnsonTrotterEven) String() string {
-	str := make([]string, len(s.p))
-
-	for i, d := range s.d {
-		p := fmt.Sprintf("%d", s.p[i])
-		switch d {
-		case 0:
-			str[i] = " " + p
-		case -1:
-			str[i] = "-" + p
-		case 1:
-			str[i] = "+" + p
-
-		}
-	}
-	return strings.Join(str, " ")
 }

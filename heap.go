@@ -1,13 +1,14 @@
 package permute
 
-// from B. R. Heap in 1963
-// algorithm for the non recursive  adapted from
-// Sedgewick, Robert. "a talk on Permutation Generation Algorithms"
-// assbackward implementation is mine
-
 // Heap is a struct to generate all the permutations in Heap's order
 //
 // see https://en.wikipedia.org/wiki/Heap%27s_algorithm for details
+//
+// from B. R. Heap in 1963
+//
+// algorithm for the non recursive  adapted from Sedgewick, Robert. "a talk on Permutation Generation Algorithms"
+//
+// Assbackward implementation is ours
 type Heap struct {
 	c []int //  current index set
 	n int   // deep position (index of c)
@@ -16,7 +17,7 @@ type Heap struct {
 //NewHeap creates a new Heap generator to generate all permutations of length n
 func NewHeap(n int) *Heap { return &Heap{c: make([]int, n)} }
 
-// Next return false when we have gone back to the identity
+// Next return false when we have generated all the permutations
 //
 // sw is updated with the transposition from previous permutation to the next one
 func (h *Heap) Next(swap *[2]int) (ok bool) {
@@ -36,6 +37,5 @@ func (h *Heap) Next(swap *[2]int) (ok bool) {
 		h.c[h.n] = 0
 		h.n++
 	}
-	*swap = [2]int{0, 0}
 	return false
 }

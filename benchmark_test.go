@@ -5,15 +5,15 @@ import "testing"
 func BenchmarkPermGenLex(b *testing.B) {
 	p := New(20)
 	for i := 0; i < b.N; i++ {
-		Lexicographical(p)
+		LexNext(p)
 	}
 }
 
 func BenchmarkPermGenSJT(b *testing.B) {
-	p := New(20)
+	h := NewPlainChangeGen(20)
 	var sw [2]int
 	for i := 0; i < b.N; i++ {
-		SteinhausJohnsonTrotter(p, &sw)
+		h.Next(&sw)
 	}
 }
 
@@ -25,7 +25,7 @@ func BenchmarkPermGenHeap(b *testing.B) {
 	}
 }
 func BenchmarkPermGenEven(b *testing.B) {
-	h := NewSteinhausJohnsonTrotterEven(20)
+	h := NewPlainChangeFastGen(20)
 	var sw [2]int
 	for i := 0; i < b.N; i++ {
 		h.Next(&sw)

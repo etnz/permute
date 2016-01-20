@@ -110,6 +110,15 @@ func Strings(p []int, val []string) {
 	}
 }
 
+// SubStrings applies subset 'p' to 'val' and returns it
+func SubStrings(p []int, val []string) []string {
+	q := make([]string, len(p))
+	for i, pi := range p {
+		q[i] = val[pi]
+	}
+	return q
+}
+
 // Floats applies permutation 'p' to 'val'
 func Floats(p []int, val []float64) {
 	q := make([]float64, len(val))
@@ -119,6 +128,15 @@ func Floats(p []int, val []float64) {
 	}
 }
 
+// SubFloats applies subset 'p' to 'val' and returns it
+func SubFloats(p []int, val []float64) []float64 {
+	q := make([]float64, len(p))
+	for i, pi := range p {
+		q[i] = val[pi]
+	}
+	return q
+}
+
 // Ints applies permutation 'p' to 'val'
 func Ints(p []int, val []int) {
 	q := make([]int, len(val))
@@ -126,4 +144,13 @@ func Ints(p []int, val []int) {
 	for i, pi := range p {
 		val[i] = q[pi]
 	}
+}
+
+// SubInts applies subset 'p' to 'val' and returns it
+func SubInts(p []int, val []int) []int {
+	q := make([]int, len(p))
+	for i, pi := range p {
+		q[i] = val[pi]
+	}
+	return q
 }

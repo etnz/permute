@@ -1,6 +1,12 @@
 package permute
 
-const upperLimit = 21
+import (
+	"fmt"
+)
+
+//the fastest way to compute int64 factorial is by statically storing all the values (there are really few of them)
+
+const upperLimit = 21 // max number of factorial values below the uint64 maximum value: 21! > MaxUint64
 
 var memoization = [upperLimit]uint64{
 	1,
@@ -29,14 +35,7 @@ var memoization = [upperLimit]uint64{
 //Factorial computes n! n beeing in [0,20], simply because there is no uint64 to represent 21!
 func Factorial(n int) uint64 {
 	if n >= upperLimit {
-		panic("uint64 overflow")
+		panic(fmt.Errorf("uint64 overflow in %v!", n))
 	}
 	return memoization[n]
-}
-
-func fact(n int) uint64 {
-	if n > 0 {
-		return uint64(n) * fact(n-1)
-	}
-	return 1
 }
