@@ -1,27 +1,32 @@
 [![Travis](https://travis-ci.org/etnz/permute.svg?branch=master)](https://travis-ci.org/etnz/permute.svg?branch=master)
 [![GoDoc](https://godoc.org/github.com/etnz/permute?status.svg)](https://godoc.org/github.com/etnz/permute)
 
-# permute
-
 golang package 'permute' provides a tools to deal with 
 [permutations](https://en.wikipedia.org/wiki/Permutations), 
 [combinations](https://en.wikipedia.org/wiki/Combination)
 .
+
+This package provide:
+
+- utility functions to deal with permutations, transpositions, combinations
+- algorithm to generate all permutations, combinations under different constraints.
+
+The number of generated items can get huge, hence the effort to generate permutations or combinations 
+so that successives elements differ only by a 'small' change.
+
+The definition of 'small' varies, but what remains is the need to generate all permutations, or combinations in a specific order.
+
+
+# Definitions
+
+## permutations
 
 A n-permutation is:
 
 - a `[]int` of length `n`
 - where each values are **unique**  *and* in the interval `[0, len[`
 
-
-a (n,k)-combination or (n,k)-subset is:
-
-- a `[]int` of length `k`
-- where each values are **unique**  *and* in the interval `[0, len[`
-- values are sorted  in ascending order.
-
-
-A permutation:
+For example, a permutation:
 
     permutation []int{ 2  ,  1  ,  0  }
     transforms    x= {"a" , "b" , "c" }
@@ -33,7 +38,15 @@ A permutation:
     fmt.Println(x)
     //Output: [c b a]
 
-A combination:
+## Combinations
+
+A (n,k)-combination or (n,k)-subset is:
+
+- a `[]int` of length `k`
+- where each values are **unique**  *and* in the interval `[0, len[`
+- values are sorted  in ascending order.
+
+For example, a combination:
 
     combination []int{ 0  ,  2  }
     transforms    x= {"a" , "b" , "c" }
@@ -45,16 +58,6 @@ A combination:
     //Output: [a c]
 
 
-
-This package provide:
-
-- utility functions to deal with permutations, transpositions, combinations
-- algorithm to generate all permutations, combination under different constraints.
-
-The number of generated items can get huge, and this historically lead to request that in the generated permutations or combinations 
-successives elements differ only in a 'small' way.
-
-The definition of 'small' varies a lot, but what remains is the need to generate all permutations, or combinations in a specific order.
 
 
 # Permutation Generation
