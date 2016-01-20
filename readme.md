@@ -94,9 +94,9 @@ Implements the [Steinhaus-Johnson-Trotter](https://en.wikipedia.org/wiki/Steinha
 
 Generates all permutations so that two successive elements differ by swapping two adjacent elements.
 
-This is the slowest method to generate permutations, but it does not require extra memory.
-
 Object that can take advantage of this property, can very quickly apply the transposition. Usually objects with linear access time.
+
+This is the slowest method to generate permutations, but it does not require extra memory.
 
 ### PlainChangeGenerator
 
@@ -112,9 +112,9 @@ Implements [Heap's Algorithm](https://en.wikipedia.org/wiki/Heap%27s_algorithm).
 This is the fastest way to generate the permutations.
 Successive elements differ by only one swapping two elements not necessarily adjacent.
 
-By far, Heap is the fastest of all to generate permutation. It uses O(n) extra memory.
-
 Object with random access, can apply such permutations as quickly as in Plain Change Order.
+
+By far, Heap is the fastest of all to generate permutation. It uses O(n) extra memory.
 
 **Caveat**: the Heap order is not cyclic. It means that the last element and the first element do not differ from 1 transposition.
 
