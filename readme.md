@@ -11,6 +11,9 @@ This package provide:
 - utility functions to deal with permutations, transpositions, combinations
 - algorithm to generate all permutations, combinations under different constraints.
 
+See [Examples](https://godoc.org/github.com/etnz/permute#pkg-examples) or directly the [godoc](https://godoc.org/github.com/etnz/permute) for more details.
+
+
 The number of generated items can get huge, hence the effort to generate permutations or combinations 
 so that successives elements differ only by a 'small' change.
 
