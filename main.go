@@ -2,26 +2,24 @@
 //
 // A permutation is exactly a '[]int', where each values are unique, *and* in the interval [0, len[
 //
-//
-//     []int{0, 1, 2} is the identity
+//	[]int{0, 1, 2} is the identity
 //
 // A permutation transforms
 //
-//     permutation []int{ 2  ,  1  ,  0  }
-//     tranforms     x= {"a" , "b" , "c" }
-//     into             {x[2], x[1], x[0]}
-//     resulting in     {"c" , "b" , "a" }
-//
+//	permutation []int{ 2  ,  1  ,  0  }
+//	tranforms     x= {"a" , "b" , "c" }
+//	into             {x[2], x[1], x[0]}
+//	resulting in     {"c" , "b" , "a" }
 //
 // In addition to applying a permutation to a collection it offers four different ways to generate all permutations :
 //
-// Lexicographical
+// # Lexicographical
 //
 // Generates all permutation in lexicographical order. Not the fastest way to generate permutations.
 //
 // Permutations in lexicographical order can imply several transposition to apply.
 //
-// SteinhausJohnsonTrotter
+// # SteinhausJohnsonTrotter
 //
 // Generates all permutation so that each permutation in the sequence differs from the previous permutation by swapping two adjacent elements.
 //
@@ -31,11 +29,11 @@
 //
 // The generated sequence is the fastest to apply: there is only one transposition each time, and of adjacent items.
 //
-// SteinhausJohnsonTrotterEven
+// # SteinhausJohnsonTrotterEven
 //
 // Add to SteinhausJohnsonTrotter method a little extra memory (O(n)) that greatly speeds up the permutation generation.
 //
-// Heap
+// # Heap
 //
 // Generates all permutation so that each permutation in the sequence differs from the previous permutation by swapping two element (not necessarily adjacent).
 //
@@ -44,113 +42,18 @@
 //
 // Here are some benchmarks executed on my computer (relative numbers matter)
 //
-//       BenchmarkPermGenHeap	100000000	        12 ns/op
-//       BenchmarkPermGenEven	20000000	       117 ns/op
-//       BenchmarkPermGenLex	10000000	       176 ns/op
-//       BenchmarkPermGenSJT	 2000000	       787 ns/op
-//
+// goos: linux
+// goarch: amd64
+// pkg: github.com/etnz/permute
+// cpu: Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz
+// BenchmarkPermGenLex             74396396       16.97 ns/op
+// BenchmarkPermGenSJT              6341468       194.7 ns/op
+// BenchmarkPermGenHeap           321184149       3.888 ns/op
+// BenchmarkPermGenEven            18083234       69.13 ns/op
+// BenchmarkFact                   65677332       18.85 ns/op
+// BenchmarkFactorial            1000000000       1.166 ns/op
+// BenchmarkParity                 68620435       17.41 ns/op
+// BenchmarkParity2                12564770       100.4 ns/op
+// BenchmarkAsTransposition         9052173       144.7 ns/op
+// BenchmarkAsTransposition2        2989990       412.1 ns/op
 package permute
-
-//Inv returns a new permutation 'q' that is the inverse of 'p'
-//
-// Meaning that q( p(x)) = x
-func Inv(p []int) (q []int) {
-
-	q = make([]int, len(p))
-	for i, v := range p {
-		q[v] = i
-	}
-	return
-}
-
-//New creates a new Permutation Identity of size 'n'
-func New(n int) []int {
-	x := make([]int, n)
-	for i := range x {
-		x[i] = i
-	}
-	return x
-}
-
-// Equals returns true if 'p' and 'q' are the same permutations
-func Equals(p, q []int) bool {
-	if len(p) != len(q) {
-		return false
-	}
-	for i := range p {
-		if p[i] != q[i] {
-			return false
-		}
-	}
-	return true
-}
-
-// Interface is a type, typically a collection, that satisfies Interface can be permuted by 'Apply' function.
-//
-// All types implementing sort.Interface also implements this one
-type Interface interface {
-	// Swap swaps the elements with indexes i and j.
-	Swap(i, j int)
-}
-
-//Apply permutation p to 'val'
-//
-func Apply(p []int, val Interface) {
-	for _, s := range Transpositions(p) {
-		val.Swap(s[0], s[1])
-	}
-}
-
-// Strings applies permutation 'p' to 'val'
-func Strings(p []int, val []string) {
-	q := make([]string, len(val))
-	copy(q, val)
-	for i, pi := range p {
-		val[i] = q[pi]
-	}
-}
-
-// SubStrings applies subset 'p' to 'val' and returns it
-func SubStrings(p []int, val []string) []string {
-	q := make([]string, len(p))
-	for i, pi := range p {
-		q[i] = val[pi]
-	}
-	return q
-}
-
-// Floats applies permutation 'p' to 'val'
-func Floats(p []int, val []float64) {
-	q := make([]float64, len(val))
-	copy(q, val)
-	for i, pi := range p {
-		val[i] = q[pi]
-	}
-}
-
-// SubFloats applies subset 'p' to 'val' and returns it
-func SubFloats(p []int, val []float64) []float64 {
-	q := make([]float64, len(p))
-	for i, pi := range p {
-		q[i] = val[pi]
-	}
-	return q
-}
-
-// Ints applies permutation 'p' to 'val'
-func Ints(p []int, val []int) {
-	q := make([]int, len(val))
-	copy(q, val)
-	for i, pi := range p {
-		val[i] = q[pi]
-	}
-}
-
-// SubInts applies subset 'p' to 'val' and returns it
-func SubInts(p []int, val []int) []int {
-	q := make([]int, len(p))
-	for i, pi := range p {
-		q[i] = val[pi]
-	}
-	return q
-}

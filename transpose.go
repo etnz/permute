@@ -1,55 +1,46 @@
 package permute
 
-//Swap applies the transposition 's' to 'p'
-func Swap(s [2]int, p Interface) { p.Swap(s[0], s[1]) }
+// T represent a single transposition
+type T [2]int
 
-//NewSwap creates a new Transposition where the first element is always lower than the second one
-//
-// A Swap can be used to swap elements of any collection
-func NewSwap(a, b int) [2]int {
+// NewTransposition creates a new transposition T where the first element is always lower than the second one
+func NewTransposition(a, b int) T {
 	if b < a {
 		a, b = b, a
 	}
-	return [2]int{a, b}
-}
-
-//SwapInts applies the transposition 's' to 'p'
-func SwapInts(s [2]int, p []int) {
-	k, pk := s[0], s[1]
-	p[k], p[pk] = p[pk], p[k]
-}
-
-//SwapStrings applies the transposition 's' to 'p'
-func SwapStrings(s [2]int, p []string) {
-	k, pk := s[0], s[1]
-	p[k], p[pk] = p[pk], p[k]
-}
-
-//SwapFloats applies the transposition 's' to 'p'
-func SwapFloats(s [2]int, p []float64) {
-	k, pk := s[0], s[1]
-	p[k], p[pk] = p[pk], p[k]
+	return T{a, b}
 }
 
 // a small part of permutation is related to transposition
 // a transposition is a pair of indexes to transpose
 
-// Transpositions generate the sequence of transpositions (swap) equivalent to 'p'
-//
-// A single transposition is a pair of indexes to be swapped
-func Transpositions(p []int) (swaps [][2]int) {
+// Transpositions generate the sequence of transpositions (swap) equivalent to 'p':
+// apply them all to the identity permutation, leads to 'p'.
+func Transpositions(p []int) (swaps []T) {
 
 	//we don't know the exact number of swaps
-	swaps = make([][2]int, 0, len(p))
+	swaps = make([]T, 0, len(p))
 
+	// iteratively convert 'current' towards the identity using atomic Transpositions,
+	// record them, and return them in reverse order.
 	current := make([]int, len(p))
 	copy(current, p)
+	for {
+		// for k := smallestNonFixedIndex(current); k >= 0; k = smallestNonFixedIndex(current) {
+		// Get the first index that is different from the identity permutation.
+		k := smallestNonFixedIndex(current)
+		if k < 0 {
+			// There are none, so current has reached the identity.
+			break
+		}
+		// TODO: there is another probably faster algo:
+		// to avoid searching for the right value: it's about pushing the current value.
+		//sk := indexof(k, current)
+		sk := current[k]
 
-	for k := smallestNonFixedIndex(current); k >= 0; k = smallestNonFixedIndex(current) {
-		sk := indexof(k, current)
-		perm := [2]int{k, sk}
+		perm := NewTransposition(k, sk)
 		swaps = append(swaps, perm)
-		SwapInts(perm, current) //inplace permute
+		swap(perm, current) //inplace permute
 	}
 	//reverse the array
 	ns := len(swaps) - 1
@@ -69,7 +60,9 @@ func indexof(x int, p []int) int {
 	return -1
 }
 
-//smallestNonFixedIndex used in Transpositions decomposition
+// smallestNonFixedIndex used in Transpositions decomposition.
+//
+// Returns the first index that is different from the identity permutation.
 func smallestNonFixedIndex(p []int) int {
 	for i, pi := range p {
 		if i != pi {

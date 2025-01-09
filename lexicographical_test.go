@@ -27,7 +27,7 @@ func ExampleLexicographical() {
 
 	for LexNext(p) {
 		x := []string{"A", "B", "C", "D"}
-		Strings(p, x)
+		Permute(p, x)
 		i++
 		fmt.Printf("%2v:%v\n", i, strings.Join(x, ""))
 	}
@@ -63,13 +63,13 @@ func ExampleSubsetLex() {
 	p := New(3)
 	i := 0
 	x := []string{"1", "2", "3", "4", "5"}
-	fmt.Printf("%v:%v\n", i, strings.Join(SubStrings(p, x), ""))
+	fmt.Printf("%v:%v\n", i, strings.Join(Subset(p, x), ""))
 	for SubsetLexNext(p, len(x)) && i < 100 {
 
-		fmt.Printf("%v:%v\n", i, strings.Join(SubStrings(p, x), ""))
+		fmt.Printf("%v:%v\n", i, strings.Join(Subset(p, x), ""))
 		i++
 	}
-	fmt.Printf("end %v\n", strings.Join(SubStrings(p, x), ""))
+	fmt.Printf("end %v\n", strings.Join(Subset(p, x), ""))
 
 	//Output:
 	// 0:123

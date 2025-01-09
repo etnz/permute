@@ -10,7 +10,7 @@ func Odd(p []int) bool { return Parity(p) == 1 }
 //
 // The Lehmer Code vector 'L' is defined so that L[i] is "the number of entries to the right of p[i], which are smaller
 //
-// L[i] = card(j>i: p[j]<p[i])
+// L[i] = card(forall j>i | p[j]<p[i])
 //
 func LehmerCode(p []int) (L []int) {
 	N := len(p)

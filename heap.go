@@ -14,13 +14,13 @@ type Heap struct {
 	n int   // deep position (index of c)
 }
 
-//NewHeap creates a new Heap generator to generate all permutations of length n
+// NewHeap creates a new Heap generator to generate all permutations of length n
 func NewHeap(n int) *Heap { return &Heap{c: make([]int, n)} }
 
 // Next return false when we have generated all the permutations
 //
 // sw is updated with the transposition from previous permutation to the next one
-func (h *Heap) Next(swap *[2]int) (ok bool) {
+func (h *Heap) Next(swap *T) (ok bool) {
 	N := len(h.c)
 	for h.n < N {
 		if h.c[h.n] < h.n {
@@ -28,7 +28,7 @@ func (h *Heap) Next(swap *[2]int) (ok bool) {
 			if h.n%2 == 0 {
 				s = 0
 			}
-			*swap = [2]int{s, h.n}
+			*swap = T{s, h.n}
 			h.c[h.n]++
 			h.n = 0
 			return true

@@ -7,7 +7,7 @@ func ExampleHeap_Next() {
 
 	h := NewHeap(len(A))
 	i := 0
-	var s [2]int
+	var s T
 	for h.Next(&s) {
 		swaps(s, A)
 		fmt.Printf("%2d: (%v, %v)  %v\n", i, s[0], s[1], A)

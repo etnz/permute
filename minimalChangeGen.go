@@ -6,13 +6,13 @@ package permute
 //
 // It returns false when it has generated all the elements.
 type MinimalChangeGen interface {
-	Next(sw *[2]int) bool
+	Next(sw *T) bool
 }
 
 // plainChangeGen implements minimal change based on sjt
 type plainChangeGen struct{ p []int }
 
-func (gen *plainChangeGen) Next(sw *[2]int) bool { return SteinhausJohnsonTrotter(gen.p, sw) }
+func (gen *plainChangeGen) Next(sw *T) bool { return SteinhausJohnsonTrotter(gen.p, sw) }
 
 // NewPlainChangeGen return a Plain change Order generator based on the Steinhaus-Johnson-Trotter algorithm.
 func NewPlainChangeGen(size int) MinimalChangeGen { return &plainChangeGen{New(size)} }
@@ -40,7 +40,7 @@ type minimalChangeGen struct {
 	p []int
 }
 
-func (gen *minimalChangeGen) Next(sw *[2]int) bool {
+func (gen *minimalChangeGen) Next(sw *T) bool {
 	return SubsetRevolvingDoorNext(gen.p, gen.n, sw)
 }
 

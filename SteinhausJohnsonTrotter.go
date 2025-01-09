@@ -1,6 +1,6 @@
 package permute
 
-//SteinhausJohnsonTrotter computes the next permutation according to the Steinhaus-Johnson-Trotter algorithm
+// SteinhausJohnsonTrotter computes the next permutation according to the Steinhaus-Johnson-Trotter algorithm
 //
 // it provides a way to generate ALL the permutations by swapping two adjacent values from one to another
 //
@@ -10,15 +10,14 @@ package permute
 //
 // 'p' is the current permutation, whereas 'sw' is the current transposition (swap) to go from the previous one to the current one.
 // While looping over all permutations of a collection, it is cheaper to apply just the transposition !
-//
-func SteinhausJohnsonTrotter(p []int, sw *[2]int) bool {
+func SteinhausJohnsonTrotter(p []int, sw *T) bool {
 	s, identity := steinhausJohnsonTrotter(p)
 	sw[0], sw[1] = s[0], s[1]
 	return !identity
 }
 
-//recursive version
-func steinhausJohnsonTrotter(p []int) (sw [2]int, identity bool) {
+// recursive version
+func steinhausJohnsonTrotter(p []int) (sw T, identity bool) {
 
 	// as I understand it:
 	// the algorithm is to ALWAYS swap the max number:e.g.
@@ -47,8 +46,8 @@ func steinhausJohnsonTrotter(p []int) (sw [2]int, identity bool) {
 		//recursion end here
 		//always swap the two values( 0,1) or (1,0)
 		// p will be identity if 1's position is currently 0
-		sw = [2]int{0, 1}
-		SwapInts(sw, p)
+		sw = T{0, 1}
+		swap(sw, p)
 		identity = s == 0
 		return
 	}
@@ -71,7 +70,7 @@ func steinhausJohnsonTrotter(p []int) (sw [2]int, identity bool) {
 			sw[1]++
 		} else {
 			// not on the boundaries
-			sw = [2]int{s - 1, s}
+			sw = T{s - 1, s}
 		}
 	} else { // case ODD
 		if s == N-1 { // this is the boundary of it
@@ -79,10 +78,10 @@ func steinhausJohnsonTrotter(p []int) (sw [2]int, identity bool) {
 			// fortunately, the sub permutation is fully on the right so the tranposition need not to be updated
 		} else {
 			// not on the boundaries
-			sw = [2]int{s, s + 1}
+			sw = T{s, s + 1}
 		}
 	}
-	SwapInts(sw, p)
+	swap(sw, p)
 	return
 
 }
@@ -95,7 +94,7 @@ type SteinhausJohnsonTrotterEven struct {
 // Next return false when we have gone back to the identity
 //
 // sw is updated with the transposition from previous permutation to the next one
-func (s *SteinhausJohnsonTrotterEven) Next(sw *[2]int) bool {
+func (s *SteinhausJohnsonTrotterEven) Next(sw *T) bool {
 
 	N := len(s.P)
 	last := true
@@ -110,7 +109,7 @@ func (s *SteinhausJohnsonTrotterEven) Next(sw *[2]int) bool {
 			s.D[i] = -1
 		}
 		s.D[0] = 0
-		*sw = NewSwap(0, 1)
+		*sw = NewTransposition(0, 1)
 		return false
 	}
 	//position of the max
@@ -125,10 +124,10 @@ func (s *SteinhausJohnsonTrotterEven) Next(sw *[2]int) bool {
 	}
 	// I've got the max I swap in that direction
 	i := maxi + maxd
-	*sw = NewSwap(maxi, i)
-	SwapInts(*sw, s.P)
+	*sw = NewTransposition(maxi, i)
+	swap(*sw, s.P)
 	//and the same goes for te direction
-	SwapInts(*sw, s.D)
+	swap(*sw, s.D)
 
 	// shall I set this new position to zero ?
 	//if element to reach the first or last position within the permutation, or if the next element in the same direction is larger than the chosen element, the direction of the chosen element is set to zero
@@ -148,5 +147,9 @@ func (s *SteinhausJohnsonTrotterEven) Next(sw *[2]int) bool {
 	}
 
 	return !last
-
 }
+
+// swap two positions in p
+//
+// equivalent to Swap() but without generic to keep the algorithm local.
+func swap(s T, p []int) { p[s[0]], p[s[1]] = p[s[1]], p[s[0]] }

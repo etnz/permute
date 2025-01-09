@@ -11,7 +11,7 @@ func BenchmarkPermGenLex(b *testing.B) {
 
 func BenchmarkPermGenSJT(b *testing.B) {
 	h := NewPlainChangeGen(20)
-	var sw [2]int
+	var sw T
 	for i := 0; i < b.N; i++ {
 		h.Next(&sw)
 	}
@@ -19,14 +19,14 @@ func BenchmarkPermGenSJT(b *testing.B) {
 
 func BenchmarkPermGenHeap(b *testing.B) {
 	h := NewHeap(20)
-	var sw [2]int
+	var sw T
 	for i := 0; i < b.N; i++ {
 		h.Next(&sw)
 	}
 }
 func BenchmarkPermGenEven(b *testing.B) {
 	h := NewPlainChangeFastGen(20)
-	var sw [2]int
+	var sw T
 	for i := 0; i < b.N; i++ {
 		h.Next(&sw)
 	}

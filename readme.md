@@ -1,4 +1,3 @@
-[![Travis](https://travis-ci.org/etnz/permute.svg?branch=master)](https://travis-ci.org/etnz/permute.svg?branch=master)
 [![GoDoc](https://godoc.org/github.com/etnz/permute?status.svg)](https://godoc.org/github.com/etnz/permute)
 
 golang package 'permute' provides a tools to deal with 
@@ -6,18 +5,30 @@ golang package 'permute' provides a tools to deal with
 [combinations](https://en.wikipedia.org/wiki/Combination)
 .
 
-This package provide:
+It is very frequent to have to loop over all permutations or combinations of a set of items,
+this package provides ways to make it simple.
 
-- utility functions to deal with permutations, transpositions, combinations
-- algorithm to generate all permutations, combinations under different constraints.
+
+Caveat: the number of permutations grows as fast as `n!` with the number of items to permute, 
+and past `20` the number of permutations is much greater than `MaxUint64`. Looping over all permutations 
+quickly become impractical.
+
+For the remaining practical cases, speed can still be critical. There are many different ways to loop
+over all permutations of a set, this package offers mutliple algorithms each one being best at something:
+- generation speed
+- memory efficiency
+- special generation order
+   - minimal change
+   - lexicographical
+   - ...
+
+When looping over all permutations (or combinations) 
+generating the next subset is the first operation in each iteration,
+but it is not the only one: usually more computation is needed to process the current subset. 
+Generators with minimal change between iterations sometimes can become instrumental in optimizing the overall iteration speed.
+
 
 See [Examples](https://godoc.org/github.com/etnz/permute#pkg-examples) or directly the [godoc](https://godoc.org/github.com/etnz/permute) for more details.
-
-
-The number of generated items can get huge, hence the effort to generate permutations or combinations 
-so that successives elements differ only by a 'small' change.
-
-The definition of 'small' varies, but what remains is the need to generate all permutations, or combinations in a specific order.
 
 
 # Definitions
@@ -27,7 +38,7 @@ The definition of 'small' varies, but what remains is the need to generate all p
 A n-permutation is:
 
 - a `[]int` of length `n`
-- where each values are **unique**  *and* in the interval `[0, len[`
+- where each values are **unique**  *and* in the interval `[0, n[`
 
 For example, a permutation:
 
@@ -46,7 +57,7 @@ For example, a permutation:
 A (n,k)-combination or (n,k)-subset is:
 
 - a `[]int` of length `k`
-- where each values are **unique**  *and* in the interval `[0, len[`
+- where each values are **unique**  *and* in the interval `[0, n[`
 - values are sorted  in ascending order.
 
 For example, a combination:
@@ -85,7 +96,7 @@ Therefore it is reasonable to look for a list of all permutation so that success
 ## Lexicographical Order
 
 Generates all permutation in lexicographical order. 
-This is not the fastest way to generate permutations, and two successives permutation can differ by many transposition.
+This is not the fastest way to generate permutations, and two successives permutation can differ by mmultiple transpositions.
 
 ## Plain Change Order
 
