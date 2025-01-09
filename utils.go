@@ -6,15 +6,15 @@ package permute
 
 // Permute permutation p to 'val'
 func Permute[E any](p []int, val []E) {
-	for _, s := range Transpositions(p) {
+	for _, s := range Decompose(p) {
 		i, j := s[0], s[1]
 		val[i], val[j] = val[j], val[i]
 	}
 }
 
 // Subset applies subset 'p' to 'val' and returns it
-func Subset[E any](p []int, val []E) []E {
-	q := make([]E, len(p))
+func Subset[Slice ~[]E, E any](p []int, val Slice) Slice {
+	q := make(Slice, len(p))
 	for i, pi := range p {
 		q[i] = val[pi]
 	}
@@ -22,7 +22,7 @@ func Subset[E any](p []int, val []E) []E {
 }
 
 // Transpose applies the transposition 't' to 'p'
-func Transpose[E any](t T, p []E) { p[t[0]], p[t[1]] = p[t[1]], p[t[0]] }
+func Transpose[Slice ~[]E, E any](t T, p Slice) { p[t[0]], p[t[1]] = p[t[1]], p[t[0]] }
 
 // Inv returns a new permutation 'q' that is the inverse of 'p'
 //

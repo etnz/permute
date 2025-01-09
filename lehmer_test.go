@@ -21,9 +21,9 @@ func BenchmarkParity2(b *testing.B) {
 
 }
 
-//deprecated by benchmarking, kept (in test) to not reproduce the error
+// deprecated by benchmarking, kept (in test) to not reproduce the error
 func Parity2(p []int) int {
-	return len(Transpositions(p)) % 2
+	return len(Decompose(p)) % 2
 }
 
 func TestDelv(t *testing.T) {

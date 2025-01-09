@@ -14,9 +14,8 @@ func NewTransposition(a, b int) T {
 // a small part of permutation is related to transposition
 // a transposition is a pair of indexes to transpose
 
-// Transpositions generate the sequence of transpositions (swap) equivalent to 'p':
-// apply them all to the identity permutation, leads to 'p'.
-func Transpositions(p []int) (swaps []T) {
+// Decompose 'p' into an equivalent sequences of Transpositions.
+func Decompose(p []int) (swaps []T) {
 
 	//we don't know the exact number of swaps
 	swaps = make([]T, 0, len(p))

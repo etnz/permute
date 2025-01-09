@@ -7,17 +7,16 @@ package permute
 // sw[1] will be the element (in the original list) to replace with
 //
 // return false if all combinations have been generated
-func SubsetRevolvingDoorNext(p []int, n int, sw *T) bool {
+func SubsetRevolvingDoorNext(p []int, n int) bool {
 	j, k := 0, len(p)
 
 	for ; j < k && p[j] == j; j++ {
 	}
 	if (k-j)%2 == 0 {
 		if j == 0 {
-			*sw = T{p[0], p[0] - 1}
 			p[0]--
 		} else {
-			iset(p, sw, j-2, j-1, j)
+			iset(p, j-2, j-1, j)
 		}
 
 	} else {
@@ -34,21 +33,20 @@ func SubsetRevolvingDoorNext(p []int, n int, sw *T) bool {
 		if pj1 != pj+1 {
 			if pj+1 >= n { // detects the end of the revolving door
 
-				*sw = T{p[k-1], k - 1}
 				p[k-1] = k - 1
 				return false
 			}
-			iset(p, sw, j-1, pj, pj+1)
+			iset(p, j-1, pj, pj+1)
 		} else {
-			iset(p, sw, j, j, pj)
+			iset(p, j, j, pj)
 		}
 	}
 	return true
 }
 
-//iset set into the array if possible (the algorithm is MUCH easier to write
+// iset set into the array if possible (the algorithm is MUCH easier to write
 // if we can 'write' out of the bounds of the p)
-func iset(p []int, sw *T, i, vi, vj int) {
+func iset(p []int, i, vi, vj int) {
 	//I've got two new values vi, and vj
 	// but one is already present (because this is a minimal change alg, there can't be two swaps)
 	//so, either vj== p[i] (I'm moving p[i] to j) or the other one
@@ -56,18 +54,9 @@ func iset(p []int, sw *T, i, vi, vj int) {
 	k := len(p)
 	switch {
 	case i == -1: //obviously i is outside
-		*sw = T{p[0], vj}
 		p[0] = vj
 	case i < k-1: // i and i+1 are still inside
-		// only one is deleted
-		if p[i] == vj { // vj is not created, then p[j] is deleted
-			*sw = T{p[i+1], vi}
-		} else { //the other way around
-			*sw = T{p[i], vj}
-		}
 		p[i], p[i+1] = vi, vj
-	case i == k-1: // j is outside
-		*sw = T{p[i], vj}
-
+	//case i == k-1: // j is outside	
 	}
 }

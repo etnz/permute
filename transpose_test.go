@@ -12,7 +12,7 @@ func TestAsTranspositions(t *testing.T) {
 
 	x := New(len(p))
 
-	swaps := Transpositions(p)
+	swaps := Decompose(p)
 	for _, perm := range swaps {
 		swap(perm, x)
 	}
@@ -26,7 +26,7 @@ func BenchmarkAsTransposition(b *testing.B) {
 	p := []int{2, 3, 4, 6, 5, 0, 7, 1, 9, 8}
 
 	for n := 0; n < b.N; n++ {
-		Transpositions(p)
+		Decompose(p)
 	}
 }
 
@@ -44,7 +44,6 @@ func BenchmarkAsTransposition3(b *testing.B) {
 		Transpositions3(p)
 	}
 }
-
 
 // alternative implementation: using prepend, but disqualified by benchmarks
 // we keep it to prevent anyone from "reinventing" the wheel

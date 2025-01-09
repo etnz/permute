@@ -41,7 +41,7 @@ type minimalChangeGen struct {
 }
 
 func (gen *minimalChangeGen) Next(sw *T) bool {
-	return SubsetRevolvingDoorNext(gen.p, gen.n, sw)
+	return SubsetRevolvingDoorNext(gen.p, gen.n)
 }
 
 // NewMinimalChangeGen return a Minimal Change Order generator for n,k-combinations based on Revolving door algorithm.
