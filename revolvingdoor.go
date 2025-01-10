@@ -6,6 +6,9 @@ import "iter"
 //
 // return false if all combinations have been generated
 func SubsetRevolvingDoorNext(p []int, n int) bool {
+	if len(p) == 0 || len(p) == n {
+		return false
+	}
 	j, k := 0, len(p)
 
 	for ; j < k && p[j] == j; j++ {

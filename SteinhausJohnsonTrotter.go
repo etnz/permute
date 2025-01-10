@@ -13,6 +13,9 @@ import "iter"
 // 'p' is the current permutation, whereas 't' is the current transposition to go from the previous one to the current one.
 // While looping over all permutations of a collection, it is cheaper to apply just the transposition !
 func SteinhausJohnsonTrotter(p []int, t *T) bool {
+	if len(p) < 2 {
+		return false
+	}
 	s, identity := steinhausJohnsonTrotter(p)
 	t[0], t[1] = s[0], s[1]
 	return !identity
@@ -55,7 +58,7 @@ func steinhausJohnsonTrotter(p []int) (sw T, identity bool) {
 	}
 
 	// build the current subquery
-	sub := make([]int, 0, N-1)
+	sub := make([]int, 0, N)
 	for i, v := range p {
 		if i != s {
 			sub = append(sub, v)
@@ -112,6 +115,9 @@ type SteinhausJohnsonTrotterEven struct {
 }
 
 func NewSteinhausJohnsonTrotterEven(n int) *SteinhausJohnsonTrotterEven {
+	if n == 0 {
+		return &SteinhausJohnsonTrotterEven{}
+	}
 	dir := make([]int, n)
 	//initialise the direction, the biggest number is
 	for i := range dir {
@@ -128,8 +134,10 @@ func NewSteinhausJohnsonTrotterEven(n int) *SteinhausJohnsonTrotterEven {
 //
 // sw is updated with the transposition from previous permutation to the next one
 func (s *SteinhausJohnsonTrotterEven) Next(sw *T) bool {
-
 	N := len(s.P)
+	if N < 2 {
+		return false
+	}
 	last := true
 	for i := range s.P {
 		if s.D[i] != 0 {

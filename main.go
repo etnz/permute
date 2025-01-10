@@ -134,6 +134,7 @@ func newPermutation(n int) P {
 	}
 	return x
 }
+
 // newSubset creates a new Subset S Identity of size 'n'
 func newSubset(n int) S {
 	x := make(S, n)
@@ -229,7 +230,12 @@ func Subset[Slice ~[]E, E any](p S, val Slice) Slice {
 }
 
 // Transpose applies the transposition 't' to 'p'
-func Transpose[Slice ~[]E, E any](t T, p Slice) { p[t[0]], p[t[1]] = p[t[1]], p[t[0]] }
+func Transpose[Slice ~[]E, E any](t T, p Slice) {
+	if t[0] == t[1] {
+		return
+	}
+	p[t[0]], p[t[1]] = p[t[1]], p[t[0]]
+}
 
 // Permutations returns an interator over all permutations of 'list'.
 //
