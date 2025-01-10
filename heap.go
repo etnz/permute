@@ -1,41 +1,50 @@
 package permute
 
-// Heap is a struct to generate all the permutations in Heap's order
-//
-// see https://en.wikipedia.org/wiki/Heap%27s_algorithm for details
-//
-// from B. R. Heap in 1963
-//
-// algorithm for the non recursive  adapted from Sedgewick, Robert. "a talk on Permutation Generation Algorithms"
-//
-// Assbackward implementation is ours
-type Heap struct {
-	c []int //  current index set
-	n int   // deep position (index of c)
-}
+import "iter"
 
-// NewHeap creates a new Heap generator to generate all permutations of length n
-func NewHeap(n int) *Heap { return &Heap{c: make([]int, n)} }
-
-// Next return false when we have generated all the permutations
+// HeapPermutations returns an interator over all permutations of 'list' using the [Heap] algorithm
 //
-// sw is updated with the transposition from previous permutation to the next one
-func (h *Heap) Next(swap *T) (ok bool) {
-	N := len(h.c)
-	for h.n < N {
-		if h.c[h.n] < h.n {
-			s := h.c[h.n]
-			if h.n%2 == 0 {
-				s = 0
-			}
-			*swap = T{s, h.n}
-			h.c[h.n]++
-			h.n = 0
-			return true
+// Each permutation is computed from the previous one + one Transposition.
+// The iterator returns both values.
+//
+// [Heap]: https://en.wikipedia.org/wiki/Heap%27s_algorithm
+func HeapPermutations[Slice ~[]E, E any](list Slice) iter.Seq2[T, Slice] {
+
+	// see https://en.wikipedia.org/wiki/Heap%27s_algorithm for details
+	//
+	// from B. R. Heap in 1963
+	//
+	// algorithm for the non recursive  adapted from Sedgewick, Robert. "a talk on Permutation Generation Algorithms"
+	//
+	// Assbackward implementation is ours
+
+	return func(yield func(t T, v Slice) bool) {
+		var t T
+		// Always return the first element in the list.
+		if !yield(t, list) {
+			return
 		}
-		//else
-		h.c[h.n] = 0
-		h.n++
+		n := 0 // deep position (index of c)
+		N := len(list)
+		c := make([]int, N) //  current index set
+
+		for n < N {
+			if c[n] < n {
+				s := c[n]
+				if n%2 == 0 {
+					s = 0
+				}
+				t = T{s, n}
+				c[n]++
+				n = 0
+				Transpose(t, list)
+				if !yield(t, list) {
+					return
+				}
+			}
+			//else
+			c[n] = 0
+			n++
+		}
 	}
-	return false
 }

@@ -7,18 +7,13 @@ func ExampleSteinhausJohnsonTrotter() {
 
 	A := []string{"A", "B", "C", "D"}
 
-	p := NewPlainChangeGen(len(A))
-	fmt.Printf("%2d:       %v\n", i, A)
-
-	var sw T
-	for p.Next(&sw) {
+	for t, v := range SteinhausJohnsonTrotterPermutations(A) {
+		fmt.Printf("%2d: (%d,%d) %v\n", i, t[0], t[1], v)
 		i++
-		Transpose(sw, A)
-		fmt.Printf("%2d: (%d,%d) %v\n", i, sw[0], sw[1], A)
 	}
 
 	//Output:
-	//  0:       [A B C D]
+	//  0: (0,0) [A B C D]
 	//  1: (2,3) [A B D C]
 	//  2: (1,2) [A D B C]
 	//  3: (0,1) [D A B C]
@@ -49,18 +44,13 @@ func ExampleSteinhausJohnsonTrotterEven() {
 
 	A := []string{"A", "B", "C", "D"}
 
-	p := NewPlainChangeFastGen(len(A))
-	fmt.Printf("%2d:       %v\n", i, A)
-
-	var sw T
-	for p.Next(&sw) {
+	for t, v := range SteinhausJohnsonTrotterEvenPermutations(A) {
+		fmt.Printf("%2d: (%d,%d) %v\n", i, t[0], t[1], v)
 		i++
-		Transpose(sw, A)
-		fmt.Printf("%2d: (%d,%d) %v\n", i, sw[0], sw[1], A)
 	}
 
 	//Output:
-	//  0:       [A B C D]
+	//  0: (0,0) [A B C D]
 	//  1: (2,3) [A B D C]
 	//  2: (1,2) [A D B C]
 	//  3: (0,1) [D A B C]

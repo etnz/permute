@@ -162,6 +162,7 @@ Implements the [Revolving Door Algorithm](https://books.google.fr/books?id=0ArDO
 
 # Still on the workbench
 
+
 - generating permutation by derangements (Lynn Yarbrough)
 - generating combination with strong minimal change
 - generating combination with adjacent Interchange

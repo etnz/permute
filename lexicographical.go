@@ -1,6 +1,10 @@
 package permute
 
-import "sort"
+import (
+	"iter"
+	"slices"
+	"sort"
+)
 
 // LexNext finds the next permutation in lexicographical order.
 //
@@ -95,4 +99,38 @@ func SubsetLexNext(p []int, n int) bool {
 		p[j] = pi + 1 + j - i
 	}
 	return true
+}
+
+// LexPermutations returns an interator over all permutations of 'list' in lexicographical order.
+func LexPermutations[Slice ~[]E, E any](list Slice) iter.Seq[Slice] {
+	return func(yield func(v Slice) bool) {
+		cp := slices.Clone(list)
+		if !yield(cp) {
+			return
+		}
+
+		p := newPermutation(len(list))
+		for LexNext(p) {
+			copy(cp, list)
+			Permute(p, cp)
+			if !yield(cp) {
+				return
+			}
+		}
+	}
+}
+
+// LexCombinations returns an iterator over all n-combinations of 'list'.
+func LexCombinations[Slice ~[]E, E any](n int, list Slice) iter.Seq[Slice] {
+	return func(yield func(v Slice) bool) {
+		s := newSubset(n)
+		if !yield(Subset(s, list)) {
+			return
+		}
+		for SubsetLexNext(s, len(list)) {
+			if !yield(Subset(s, list)) {
+				return
+			}
+		}
+	}
 }

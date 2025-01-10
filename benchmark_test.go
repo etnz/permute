@@ -2,32 +2,59 @@ package permute
 
 import "testing"
 
-func BenchmarkPermGenLex(b *testing.B) {
-	p := New(20)
+// Benchmarks the different algorithms.
+
+// for permutations
+
+func BenchmarkHeapPermutations(b *testing.B) {
+	x := newPermutation(4)
 	for i := 0; i < b.N; i++ {
-		LexNext(p)
+		for _ = range HeapPermutations(x) {
+		}
+	}
+}
+func BenchmarkLexPermutations(b *testing.B) {
+	x := newPermutation(4)
+	for i := 0; i < b.N; i++ {
+		for _ = range LexPermutations(x) {
+		}
+	}
+}
+func BenchmarkSteinhausJohnsonTrotterPermutations(b *testing.B) {
+	x := newPermutation(4)
+	for i := 0; i < b.N; i++ {
+		for _ = range SteinhausJohnsonTrotterPermutations(x) {
+		}
+	}
+}
+func BenchmarkSteinhausJohnsonTrotterEvenPermutations(b *testing.B) {
+	x := newPermutation(4)
+	for i := 0; i < b.N; i++ {
+		for _ = range SteinhausJohnsonTrotterEvenPermutations(x) {
+		}
 	}
 }
 
-func BenchmarkPermGenSJT(b *testing.B) {
-	h := NewPlainChangeGen(20)
-	var sw T
-	for i := 0; i < b.N; i++ {
-		h.Next(&sw)
-	}
-}
+// Heap
+// Lexicographical
+// SteinhausJohnsonTrotter
+// SteinhausJohnsonTrotterEven
+//
+// for combinations
+// Lexicographical
+// RevolvingDoor
 
-func BenchmarkPermGenHeap(b *testing.B) {
-	h := NewHeap(20)
-	var sw T
+func BenchmarkLexCombinations(b *testing.B) {
+	x := newPermutation(12)
 	for i := 0; i < b.N; i++ {
-		h.Next(&sw)
+		for _ = range LexCombinations(6, x) {
+		}
 	}
 }
-func BenchmarkPermGenEven(b *testing.B) {
-	h := NewPlainChangeFastGen(20)
-	var sw T
+func BenchmarkRevolvingDoorCombinations(b *testing.B) {
+	x := newPermutation(12)
 	for i := 0; i < b.N; i++ {
-		h.Next(&sw)
+		for _ = range RevolvingDoorCombinations(6, x) {
+		}
 	}
 }

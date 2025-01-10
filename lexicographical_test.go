@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 
-func TestNext(t *testing.T) {
-	p := New(3)
+func TestLexNext(t *testing.T) {
+	p := newPermutation(3)
 	for i := 0; i < 6; i++ {
 		LexNext(p)
 	}
@@ -18,18 +18,11 @@ func TestNext(t *testing.T) {
 }
 
 func ExampleLexicographical() {
-
-	p := New(4)
-	i := 0
-
 	x := []string{"A", "B", "C", "D"}
-	fmt.Printf("%2v:%v\n", i, strings.Join(x, ""))
-
-	for LexNext(p) {
-		x := []string{"A", "B", "C", "D"}
-		Permute(p, x)
+	i := 0
+	for v := range LexPermutations(x) {
+		fmt.Printf("%2v:%v\n", i, strings.Join(v, ""))
 		i++
-		fmt.Printf("%2v:%v\n", i, strings.Join(x, ""))
 	}
 
 	//Output:
@@ -59,28 +52,23 @@ func ExampleLexicographical() {
 	// 23:DCBA
 }
 func ExampleSubsetLex() {
-
-	p := New(3)
 	i := 0
 	x := []string{"1", "2", "3", "4", "5"}
-	fmt.Printf("%v:%v\n", i, strings.Join(Subset(p, x), ""))
-	for SubsetLexNext(p, len(x)) && i < 100 {
-
-		fmt.Printf("%v:%v\n", i, strings.Join(Subset(p, x), ""))
+	for v := range LexCombinations(3, x) {
+		fmt.Printf("%v:%v\n", i, strings.Join(v, ""))
 		i++
 	}
-	fmt.Printf("end %v\n", strings.Join(Subset(p, x), ""))
 
 	//Output:
 	// 0:123
-	// 0:124
-	// 1:125
-	// 2:134
-	// 3:135
-	// 4:145
-	// 5:234
-	// 6:235
-	// 7:245
-	// 8:345
-	// end 123
+	// 1:124
+	// 2:125
+	// 3:134
+	// 4:135
+	// 5:145
+	// 6:234
+	// 7:235
+	// 8:245
+	// 9:345
+
 }
