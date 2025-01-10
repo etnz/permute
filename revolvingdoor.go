@@ -62,11 +62,11 @@ func subsetRevolvingDoorNext(p []int, n int) bool {
 	return true
 }
 
-// RevolvingDoorCombinations returns an iterator over all n-combinations of 'list' according to the
-// Revolving door algorithm.
+// RevCombinations returns an iterator over all n-combinations of 'list' according to the
+// Revolving Door algorithm.
 //
 // ref Knuth, Donald Ervin. The Art of Computer Programming, volume 4, fascicle 3; generating all combinations and partitions, sec. 7.2.1.3, algorithm R, Revolving-door combinations,  p. 9.
-func RevolvingDoorCombinations[Slice ~[]E, E any](n int, list Slice) iter.Seq[Slice] {
+func RevCombinations[Slice ~[]E, E any](n int, list Slice) iter.Seq[Slice] {
 	return func(yield func(v Slice) bool) {
 		s := newSubset(n)
 		if !yield(Subset(s, list)) {

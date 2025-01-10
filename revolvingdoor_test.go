@@ -25,7 +25,7 @@ func TestRevolvingDoorCombinations(t *testing.T) {
 				//Prepare a set of all combinations.
 				all := make(map[string]struct{})
 				count := 0
-				for p := range RevolvingDoorCombinations(n, list) {
+				for p := range RevCombinations(n, list) {
 					all[strings.Join(p, "")] = struct{}{}
 					for _, i := range p {
 						if _, in := items[i]; !in {

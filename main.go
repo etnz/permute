@@ -231,6 +231,4 @@ func Transpose[Slice ~[]E, E any](t T, p Slice) {
 func Permutations[Slice ~[]E, E any](list Slice) iter.Seq2[T, Slice] { return HeapPermutations(list) }
 
 // Combinations returns an iterator over all n-combinations of 'list'.
-func Combinations[Slice ~[]E, E any](n int, list Slice) iter.Seq[Slice] {
-	return RevolvingDoorCombinations(n, list)
-}
+func Combinations[Slice ~[]E, E any](n int, l Slice) iter.Seq[Slice] { return RevCombinations(n, l) }

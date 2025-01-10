@@ -86,7 +86,7 @@ func BenchmarkCombinations(b *testing.B) {
 	for n := 0; n < 20; n++ {
 		for k := 0; k <= n; k++ {
 			benchCombination(b, "Lex", n, k, LexCombinations)
-			benchCombination(b, "Rev", n, k, RevolvingDoorCombinations)
+			benchCombination(b, "Rev", n, k, RevCombinations)
 		}
 	}
 }
