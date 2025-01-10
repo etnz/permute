@@ -155,6 +155,18 @@ func newTransposition(a, b int) T {
 // a small part of permutation is related to transposition
 // a transposition is a pair of indexes to transpose
 
+// smallestNonFixedIndex used in Transpositions decomposition.
+//
+// Returns the first index that is different from the identity permutation.
+func smallestNonFixedIndex(p P) int {
+	for i, pi := range p {
+		if i != pi {
+			return i
+		}
+	}
+	return -1 //if none is non fix
+}
+
 // Decompose 'p' into an equivalent sequences of Transpositions.
 func Decompose(p P) (transpositions []T) {
 
@@ -173,9 +185,6 @@ func Decompose(p P) (transpositions []T) {
 			// There are none, so current has reached the identity.
 			break
 		}
-		// TODO: there is another probably faster algo:
-		// to avoid searching for the right value: it's about pushing the current value.
-		//sk := indexof(k, current)
 		sk := current[k]
 
 		perm := newTransposition(k, sk)
@@ -190,29 +199,7 @@ func Decompose(p P) (transpositions []T) {
 	return
 }
 
-// indexof compute the index in 'p' of a given value 'p'
-func indexof(x int, p P) int {
-	for i, pi := range p {
-		if pi == x {
-			return i
-		}
-	}
-	return -1
-}
-
-// smallestNonFixedIndex used in Transpositions decomposition.
-//
-// Returns the first index that is different from the identity permutation.
-func smallestNonFixedIndex(p P) int {
-	for i, pi := range p {
-		if i != pi {
-			return i
-		}
-	}
-	return -1 //if none is non fix
-}
-
-// Permute permutation p to 'val'
+// Permute permutation p to 'val'.
 func Permute[Slice ~[]E, E any](p P, val Slice) {
 	for _, s := range Decompose(p) {
 		i, j := s[0], s[1]
@@ -220,7 +207,7 @@ func Permute[Slice ~[]E, E any](p P, val Slice) {
 	}
 }
 
-// Subset applies subset 'p' to 'val' and returns it
+// Subset applies subset 'p' to 'val' and returns it.
 func Subset[Slice ~[]E, E any](p S, val Slice) Slice {
 	q := make(Slice, len(p))
 	for i, pi := range p {
@@ -229,7 +216,7 @@ func Subset[Slice ~[]E, E any](p S, val Slice) Slice {
 	return q
 }
 
-// Transpose applies the transposition 't' to 'p'
+// Transpose applies the transposition 't' to 'p'.
 func Transpose[Slice ~[]E, E any](t T, p Slice) {
 	if t[0] == t[1] {
 		return

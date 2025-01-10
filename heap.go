@@ -1,6 +1,9 @@
 package permute
 
-import "iter"
+import (
+	"iter"
+	"slices"
+)
 
 // HeapPermutations returns an interator over all permutations of 'list' using the [Heap] algorithm
 //
@@ -8,7 +11,7 @@ import "iter"
 // The iterator returns both values.
 //
 // [Heap]: https://en.wikipedia.org/wiki/Heap%27s_algorithm
-func HeapPermutations[Slice ~[]E, E any](list Slice) iter.Seq2[T, Slice] {
+func HeapPermutations[Slice ~[]E, E any](l Slice) iter.Seq2[T, Slice] {
 
 	// see https://en.wikipedia.org/wiki/Heap%27s_algorithm for details
 	//
@@ -17,7 +20,7 @@ func HeapPermutations[Slice ~[]E, E any](list Slice) iter.Seq2[T, Slice] {
 	// algorithm for the non recursive  adapted from Sedgewick, Robert. "a talk on Permutation Generation Algorithms"
 	//
 	// Assbackward implementation is ours
-
+	list := slices.Clone(l)
 	return func(yield func(t T, v Slice) bool) {
 		var t T
 		// Always return the first element in the list.

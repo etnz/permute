@@ -2,10 +2,27 @@ package permute
 
 import "iter"
 
-// SubsetRevolvingDoorNext computes the next combination 'p' from 'n'.
+// iset set into the array if possible (the algorithm is MUCH easier to write
+// if we can 'write' out of the bounds of the p)
+func iset(p []int, i, vi, vj int) {
+	//I've got two new values vi, and vj
+	// but one is already present (because this is a minimal change alg, there can't be two swaps)
+	//so, either vj== p[i] (I'm moving p[i] to j) or the other one
+
+	k := len(p)
+	switch {
+	case i == -1: //obviously i is outside
+		p[0] = vj
+	case i < k-1: // i and i+1 are still inside
+		p[i], p[i+1] = vi, vj
+		//case i == k-1: // j is outside
+	}
+}
+
+// subsetRevolvingDoorNext computes the next combination 'p' from 'n'.
 //
 // return false if all combinations have been generated
-func SubsetRevolvingDoorNext(p []int, n int) bool {
+func subsetRevolvingDoorNext(p []int, n int) bool {
 	if len(p) == 0 || len(p) == n {
 		return false
 	}
@@ -45,23 +62,6 @@ func SubsetRevolvingDoorNext(p []int, n int) bool {
 	return true
 }
 
-// iset set into the array if possible (the algorithm is MUCH easier to write
-// if we can 'write' out of the bounds of the p)
-func iset(p []int, i, vi, vj int) {
-	//I've got two new values vi, and vj
-	// but one is already present (because this is a minimal change alg, there can't be two swaps)
-	//so, either vj== p[i] (I'm moving p[i] to j) or the other one
-
-	k := len(p)
-	switch {
-	case i == -1: //obviously i is outside
-		p[0] = vj
-	case i < k-1: // i and i+1 are still inside
-		p[i], p[i+1] = vi, vj
-		//case i == k-1: // j is outside
-	}
-}
-
 // RevolvingDoorCombinations returns an iterator over all n-combinations of 'list' according to the
 // Revolving door algorithm.
 //
@@ -72,7 +72,7 @@ func RevolvingDoorCombinations[Slice ~[]E, E any](n int, list Slice) iter.Seq[Sl
 		if !yield(Subset(s, list)) {
 			return
 		}
-		for SubsetRevolvingDoorNext(s, len(list)) {
+		for subsetRevolvingDoorNext(s, len(list)) {
 			if !yield(Subset(s, list)) {
 				return
 			}

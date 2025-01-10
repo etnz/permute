@@ -1,28 +1,41 @@
 package permute
 
-import "iter"
+import (
+	"iter"
+	"slices"
+)
 
-// SteinhausJohnsonTrotter computes the next permutation according to the Steinhaus-Johnson-Trotter algorithm
+// indexof compute the index in 'p' of a given value 'p'
+func indexof(x int, p P) int {
+	for i, pi := range p {
+		if pi == x {
+			return i
+		}
+	}
+	return -1
+}
+
+// steinhausJohnsonTrotter computes the next permutation according to the Steinhaus-Johnson-Trotter algorithm
 //
 // it provides a way to generate ALL the permutations by swapping two adjacent values from one to another
 //
-// Each call to SteinhausJohnsonTrotter updates, in place 'p', and 't'
+// Each call to steinhausJohnsonTrotter updates, in place 'p', and 't'
 //
 // It returns 'false' if it has gone back to the identity permutation.
 //
 // 'p' is the current permutation, whereas 't' is the current transposition to go from the previous one to the current one.
 // While looping over all permutations of a collection, it is cheaper to apply just the transposition !
-func SteinhausJohnsonTrotter(p []int, t *T) bool {
+func steinhausJohnsonTrotter(p []int, t *T) bool {
 	if len(p) < 2 {
 		return false
 	}
-	s, identity := steinhausJohnsonTrotter(p)
+	s, identity := steinhausJohnsonTrotterRec(p)
 	t[0], t[1] = s[0], s[1]
 	return !identity
 }
 
 // recursive version
-func steinhausJohnsonTrotter(p []int) (sw T, identity bool) {
+func steinhausJohnsonTrotterRec(p []int) (sw T, identity bool) {
 
 	// as I understand it:
 	// the algorithm is to ALWAYS swap the max number:e.g.
@@ -69,7 +82,7 @@ func steinhausJohnsonTrotter(p []int) (sw T, identity bool) {
 	if even(sub) {
 
 		if s == 0 { // this is the boundary of it
-			sw, identity = steinhausJohnsonTrotter(sub)
+			sw, identity = steinhausJohnsonTrotterRec(sub)
 			// unfortunately, the sub permutation is fully on the right so the tranposition need to be updated
 			sw[0]++
 			sw[1]++
@@ -79,7 +92,7 @@ func steinhausJohnsonTrotter(p []int) (sw T, identity bool) {
 		}
 	} else { // case ODD
 		if s == N-1 { // this is the boundary of it
-			sw, identity = steinhausJohnsonTrotter(sub)
+			sw, identity = steinhausJohnsonTrotterRec(sub)
 			// fortunately, the sub permutation is fully on the right so the tranposition need not to be updated
 		} else {
 			// not on the boundaries
@@ -90,9 +103,10 @@ func steinhausJohnsonTrotter(p []int) (sw T, identity bool) {
 	return
 }
 
-// SteinhausJohnsonTrotterPermutations returns an interator over all permutations of 'list' using the
+// SJTPermutations returns an interator over all permutations of 'list' using the
 // Steinhaus-Johnson-Trotter algorithm.
-func SteinhausJohnsonTrotterPermutations[Slice ~[]E, E any](list Slice) iter.Seq2[T, Slice] {
+func SJTPermutations[Slice ~[]E, E any](l Slice) iter.Seq2[T, Slice] {
+	list := slices.Clone(l)
 	return func(yield func(t T, v Slice) bool) {
 		var t T
 		if !yield(t, list) {
@@ -100,7 +114,7 @@ func SteinhausJohnsonTrotterPermutations[Slice ~[]E, E any](list Slice) iter.Seq
 		}
 		p := newPermutation(len(list))
 
-		for SteinhausJohnsonTrotter(p, &t) {
+		for steinhausJohnsonTrotter(p, &t) {
 			Transpose(t, list)
 			if !yield(t, list) {
 				return
@@ -109,14 +123,14 @@ func SteinhausJohnsonTrotterPermutations[Slice ~[]E, E any](list Slice) iter.Seq
 	}
 }
 
-// SteinhausJohnsonTrotterEven implements a minimal change generator based on Even speed up
-type SteinhausJohnsonTrotterEven struct {
+// steinhausJohnsonTrotterEven implements a minimal change generator based on Even speed up
+type steinhausJohnsonTrotterEven struct {
 	P, D []int //permutation and direction marker
 }
 
-func NewSteinhausJohnsonTrotterEven(n int) *SteinhausJohnsonTrotterEven {
+func newSteinhausJohnsonTrotterEven(n int) *steinhausJohnsonTrotterEven {
 	if n == 0 {
-		return &SteinhausJohnsonTrotterEven{}
+		return &steinhausJohnsonTrotterEven{}
 	}
 	dir := make([]int, n)
 	//initialise the direction, the biggest number is
@@ -124,7 +138,7 @@ func NewSteinhausJohnsonTrotterEven(n int) *SteinhausJohnsonTrotterEven {
 		dir[i] = -1
 	}
 	dir[0] = 0
-	return &SteinhausJohnsonTrotterEven{
+	return &steinhausJohnsonTrotterEven{
 		D: dir,
 		P: newPermutation(n),
 	}
@@ -133,7 +147,7 @@ func NewSteinhausJohnsonTrotterEven(n int) *SteinhausJohnsonTrotterEven {
 // Next return false when we have gone back to the identity
 //
 // sw is updated with the transposition from previous permutation to the next one
-func (s *SteinhausJohnsonTrotterEven) Next(sw *T) bool {
+func (s *steinhausJohnsonTrotterEven) Next(sw *T) bool {
 	N := len(s.P)
 	if N < 2 {
 		return false
@@ -190,15 +204,16 @@ func (s *SteinhausJohnsonTrotterEven) Next(sw *T) bool {
 	return !last
 }
 
-// SteinhausJohnsonTrotterEvenPermutations returns an interator over all permutations of 'list' using the
+// SJTEPermutations returns an interator over all permutations of 'list' using the
 // Steinhaus-Johnson-Trotter algorithm with the Even speed up.
-func SteinhausJohnsonTrotterEvenPermutations[Slice ~[]E, E any](list Slice) iter.Seq2[T, Slice] {
+func SJTEPermutations[Slice ~[]E, E any](l Slice) iter.Seq2[T, Slice] {
+	list := slices.Clone(l)
 	return func(yield func(t T, v Slice) bool) {
 		var t T
 		if !yield(t, list) {
 			return
 		}
-		s := NewSteinhausJohnsonTrotterEven(len(list))
+		s := newSteinhausJohnsonTrotterEven(len(list))
 		for s.Next(&t) {
 			Transpose(t, list)
 			if !yield(t, list) {
