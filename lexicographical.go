@@ -1,13 +1,17 @@
 package permute
 
-import "sort"
+import (
+	"iter"
+	"slices"
+	"sort"
+)
 
-// LexNext finds the next permutation in lexicographical order.
+// lexNext finds the next permutation in lexicographical order.
 //
 // return false if it has gone back to the identity permutation.
 //
 // inspired from Narayana Pandita in https://en.wikipedia.org/wiki/Permutation
-func LexNext(p []int) bool {
+func lexNext(p []int) bool {
 
 	// the principle for lehmer code is to convert an factoradic number into its permutation:
 	//
@@ -75,10 +79,10 @@ func LexNext(p []int) bool {
 	return true
 }
 
-// SubsetLexNext updates 'p' to be the next lexicographical combination in the list of all combinations in lexicographical order
+// subsetLexNext updates 'p' to be the next lexicographical combination in the list of all combinations in lexicographical order
 //
 // returns false if we have generated all the elements
-func SubsetLexNext(p []int, n int) bool {
+func subsetLexNext(p []int, n int) bool {
 	k := len(p)
 	i := k - 1
 	for ; i >= 0 && p[i] == n-k+i; i-- {
@@ -95,4 +99,38 @@ func SubsetLexNext(p []int, n int) bool {
 		p[j] = pi + 1 + j - i
 	}
 	return true
+}
+
+// LexPermutations returns an interator over all permutations of 'list' in lexicographical order.
+func LexPermutations[Slice ~[]E, E any](l Slice) iter.Seq[Slice] {
+	list := slices.Clone(l)
+	return func(yield func(v Slice) bool) {
+		if !yield(list) {
+			return
+		}
+
+		p := newPermutation(len(l))
+		for lexNext(p) {
+			copy(list, l)
+			Permute(p, list)
+			if !yield(list) {
+				return
+			}
+		}
+	}
+}
+
+// LexCombinations returns an iterator over all n-combinations of 'list'.
+func LexCombinations[Slice ~[]E, E any](n int, list Slice) iter.Seq[Slice] {
+	return func(yield func(v Slice) bool) {
+		s := newSubset(n)
+		if !yield(Subset(s, list)) {
+			return
+		}
+		for subsetLexNext(s, len(list)) {
+			if !yield(Subset(s, list)) {
+				return
+			}
+		}
+	}
 }
