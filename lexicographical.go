@@ -6,12 +6,12 @@ import (
 	"sort"
 )
 
-// lexNext finds the next permutation in lexicographical order.
+// LexNext finds the next permutation in lexicographical order.
 //
 // return false if it has gone back to the identity permutation.
 //
 // inspired from Narayana Pandita in https://en.wikipedia.org/wiki/Permutation
-func lexNext(p []int) bool {
+func LexNext(p []int) bool {
 
 	// the principle for lehmer code is to convert an factoradic number into its permutation:
 	//
@@ -110,7 +110,7 @@ func LexPermutations[Slice ~[]E, E any](l Slice) iter.Seq[Slice] {
 		}
 
 		p := newPermutation(len(l))
-		for lexNext(p) {
+		for LexNext(p) {
 			copy(list, l)
 			Permute(p, list)
 			if !yield(list) {

@@ -9,7 +9,7 @@ import (
 func TestLexNext(t *testing.T) {
 	p := newPermutation(3)
 	for i := 0; i < 6; i++ {
-		lexNext(p)
+		LexNext(p)
 	}
 
 	if p[0] != 0 || p[1] != 1 || p[2] != 2 {
