@@ -20,22 +20,6 @@ func TestPermute(t *testing.T) {
 
 }
 
-func ExamplePermutations() {
-	A := []string{"A", "B", "C"}
-
-	// Loop over all permutations of A.
-	for _, v := range Permutations(A) {
-		fmt.Println(v)
-	}
-
-	//Output:
-	// [A B C]
-	// [B A C]
-	// [C A B]
-	// [A C B]
-	// [B C A]
-	// [C B A]
-}
 
 func ExamplePermutations_WithTranspositions() {
 	A := []string{"A", "B", "C"}
@@ -54,23 +38,6 @@ func ExamplePermutations_WithTranspositions() {
 	// [A C B]
 	// [B C A]
 	// [C B A]
-}
-
-func ExampleCombinations() {
-	A := []string{"A", "B", "C", "D"}
-
-	// Loop over all 2-Combinations of A.
-	for v := range Combinations(2, A) {
-		fmt.Println(v)
-	}
-
-	//Output:
-	// [A B]
-	// [B C]
-	// [A C]
-	// [C D]
-	// [B D]
-	// [A D]
 }
 
 // TestDecompose assess on a simple example that the

@@ -10,23 +10,16 @@ this package provides ways to make it simple.
 
 
 Caveat: the number of permutations grows as fast as `n!` with the number of items to permute, 
-and past `20` the number of permutations is much greater than `MaxUint64`. Looping over all permutations 
-quickly become impractical.
+and past `20` items the number of permutations is much greater than `MaxUint64`. Looping over all of them 
+is impractical.
 
-For the remaining practical cases, speed can still be critical. There are many different ways to loop
-over all permutations of a set, this package offers mutliple algorithms each one being best at something:
+For the remaining practical cases, speed can still be critical though, and there are different ways to generate permutations or combinations.
+This package offers multiple algorithms each one being best at something:
 - generation speed
 - memory efficiency
-- special generation order
-   - minimal change
+- generation order
+   - [minimal changes](https://en.wikipedia.org/wiki/Permutation#Generation_with_minimal_changes)
    - lexicographical
-   - ...
-
-When looping over all permutations (or combinations) 
-generating the next subset is the first operation in each iteration,
-but it is not the only one: usually more computation is needed to process the current subset. 
-Generators with minimal change between iterations sometimes can become instrumental in optimizing the overall iteration speed.
-
 
 See [Examples](https://godoc.org/github.com/etnz/permute#pkg-examples) or directly the [godoc](https://godoc.org/github.com/etnz/permute) for more details.
 
@@ -40,17 +33,18 @@ A n-permutation is:
 - a `[]int` of length `n`
 - where each values are **unique**  *and* in the interval `[0, n[`
 
-For example, a permutation:
+[Permutation example](https://pkg.go.dev/github.com/etnz/permute#example-Permute):
 
-    permutation []int{ 2  ,  1  ,  0  }
-    transforms    x= {"a" , "b" , "c" }
-    into             {x[2], x[1], x[0]}
-    resulting in     {"c" , "b" , "a" }
-
-    x := []string{"a", "b", "c"}
-    Strings([]int{2, 1, 0}, x)
-    fmt.Println(x)
-    //Output: [c b a]
+```go
+// For a given set 'x'.
+	x := []string{"a", "b", "c"}
+	// The permutation 'p'
+	p := []int{2, 1, 0}
+	// transform 'x' into: `{x[2], x[1], x[0]}`
+	Permute(p, x)
+	fmt.Printf("%#v", x)
+	//Output: []string{"c", "b", "a"}
+```
 
 ## Combinations
 
@@ -60,105 +54,89 @@ A (n,k)-combination or (n,k)-subset is:
 - where each values are **unique**  *and* in the interval `[0, n[`
 - values are sorted  in ascending order.
 
-For example, a combination:
+[Combination example](https://pkg.go.dev/github.com/etnz/permute#example-Subset):
 
-    combination []int{ 0  ,  2  }
-    transforms    x= {"a" , "b" , "c" }
-    into             {x[0], x[2]}
-    resulting in     {"a" , "c" }
-
-    x := SubStrings([]int{0, 2}, []string{"a", "b", "c"})
-    fmt.Println(x)
-    //Output: [a c]
-
+```go
+	// For a given set 'x'.
+	x := []string{"a", "b", "c"}
+	// The combination 'c'
+	c := []int{0,2}
+	// transform 'x' into: `{x[2], x[0]}`
+	x=Subset(c, x)
+	fmt.Printf("%#v", x)
+	//Output: []string{"a", "c"}
+```
 
 
 
 # Permutation Generation
 
-This package offers several methods to generate all permutations.
+[Permutations example](https://pkg.go.dev/github.com/etnz/permute#example-Permutations):
 
-To apply successive permutation to a vector it is usual to compute the list of transposition to be applied to move from the current position to the next.
+```go
+	// For a given set 'x'.
+	x := []string{"a", "b", "c"}
 
-For instance in the following permutations 
+	// One can simply loop over all permutations.
+	for _, p := range Permutations(x) {
+		fmt.Println(p)
+	}
+	//Output:
+	// [a b c]
+	// [b a c]
+	// [c a b]
+	// [a c b]
+	// [b c a]
+	// [c b a]
+```
 
-    1:ABDC
-    2:ACBD
+This package offers several other methods to generate all permutations:
+  - **Lexicographical Order**: Generates all permutation in lexicographical order. This is not the fastest way to generate permutations, 
+    and two successives permutation can differ by mmultiple transpositions.
+  - **Steinhaus-Johnson-Trotter**: Generates all permutation with [minimal changes](https://en.wikipedia.org/wiki/Permutation#Generation_with_minimal_changes) and minimal memory consumption,
+    using the the [Steinhaus-Johnson-Trotter](https://en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm).
+  - **Even Speedup**: like Steinhaus-Johnson-Trotter but with a little speed up at the expense of a O(n) extra memory (but 'n' is always very small here).
+  - **Heap**: generates all permutation  with [minimal changes](https://en.wikipedia.org/wiki/Permutation#Generation_with_minimal_changes) and minimal memory consumption 
+    using the [Heap's Algorithm](https://en.wikipedia.org/wiki/Heap%27s_algorithm). This is the default implementation, and the fastest. The only limit is that the last element of the loop
+    cannot be transformed into the first one with one single transposition (like with Steinhaus-Johnson-Trotter algorithm).
 
-moving a vector from `ABDC` to `ACBD` can be done with two transpositions: 
+## Benchmarks
 
-- `(1,2)` swapping 'B' and 'D' into `ADBC`
-- `(1,3)` swapping 'D' and 'C' into `ACBD`
+Benchmark are available to compare permutations generation algorithms
 
-Therefore it is reasonable to look for a list of all permutation so that successive elements differ only by one transposition, this would be the fastest way to apply them.
-
-
-## Lexicographical Order
-
-Generates all permutation in lexicographical order. 
-This is not the fastest way to generate permutations, and two successives permutation can differ by mmultiple transpositions.
-
-## Plain Change Order
-
-There are two available implementations.
-
-### PlainChangeNext
-
-Implements the [Steinhaus-Johnson-Trotter](https://en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm)
-
-Generates all permutations so that two successive elements differ by swapping two adjacent elements.
-
-Object that can take advantage of this property, can very quickly apply the transposition. Usually objects with linear access time.
-
-This is the slowest method to generate permutations, but it does not require extra memory.
-
-### PlainChangeGenerator
-
-Implements the [Even speedup](https://en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm#Even.27s_speedup) on top of the [Steinhaus-Johnson-Trotter](https://en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm).
-
-It adds up an extra memory ( O(n) ) that greatly speeds up the generation. The generated list is identical.
-
-## Heap Order
-
-
-Implements [Heap's Algorithm](https://en.wikipedia.org/wiki/Heap%27s_algorithm).
-
-This is the fastest way to generate the permutations.
-Successive elements differ by only one swapping two elements not necessarily adjacent.
-
-Object with random access, can apply such permutations as quickly as in Plain Change Order.
-
-By far, Heap is the fastest of all to generate permutation. It uses O(n) extra memory.
-
-**Caveat**: the Heap order is not cyclic. It means that the last element and the first element do not differ from 1 transposition.
-
-
-## Benchmarks 
-
-Here are some benchmarks executed on my computer (relative numbers matter)
-
-      BenchmarkPermGenHeap 100000000    12 ns/op
-      BenchmarkPermGenEven  20000000   117 ns/op
-      BenchmarkPermGenLex   10000000   176 ns/op
-      BenchmarkPermGenSJT    2000000   787 ns/op
-
+![Permutations](benchmarkPermutations.svg)
 
 
 # Combination Generation
 
-The same principles applies for the combination generation. We want to generate all n,k-combinations but in the best possible order.
+[Combinations example](https://pkg.go.dev/github.com/etnz/permute#example-Combinations):
 
-Usually the best possible order is when successive elements differs by one item only.
+```go
+	// For a given set 'x'.
+	x := []string{"a", "b", "c"}
 
-## Lexicographical Order
+	// One can simply loop over all 2-combinations.
+	for v := range Combinations(2, x) {
+		fmt.Println(v)
+	}
+	//Output:
+	// [a b]
+	// [b c]
+	// [a c]
+```
 
-Generates all combinations in lexicographical order. 
-This is not the fastest way to generate permutations, and two successives combinations can differ by multiple transposition.
+This package also offers several other methods to generate all combinations:
+  - **Lexicographical Order**: Generates all combinations in lexicographical order. This is not the fastest one,
+    and two successives combinations can differ by mmultiple transpositions.
+  - **Revolving Door**: Generates all combinations in minimal change order using the [Revolving Door Algorithm](https://books.google.fr/books?id=0ArDOdcWNQcC&lpg=PA48&ots=JEsy6Hgdio&dq=revolving%20door%20algorithm&pg=PA49#v=onepage&q=revolving%20door%20algorithm&f=false). This is the default algorithm.
 
 
-## Minimal Change Order
+## Benchmarks
 
-Implements the [Revolving Door Algorithm](https://books.google.fr/books?id=0ArDOdcWNQcC&lpg=PA48&ots=JEsy6Hgdio&dq=revolving%20door%20algorithm&pg=PA49#v=onepage&q=revolving%20door%20algorithm&f=false) where all combinations differ by one item only.
+Benchmark are available to compare combinations generation algorithms
+
+![Combinations](benchmarkCombinations.svg)
+
 
 # Still on the workbench
 
